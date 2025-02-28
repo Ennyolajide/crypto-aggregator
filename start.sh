@@ -34,7 +34,6 @@ start_service() {
     fi
 }
 
-
 # Clear database queue (since you're using database driver)
 echo -e "${YELLOW}Install composer dependencies...${NC}"
 if [ ! -e "/var/www/vendor" ]; then
@@ -58,17 +57,6 @@ npm install
 npm run build
 
 
-Run migrations
-php artisan key:generate
-php artisan migrate:fresh --seed # Ensure fresh job tables
-
-Clear cache configurations
-echo -e "${YELLOW}Clearing cache configurations...${NC}"
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-
-
 #Set Db for testing
 # Create the SQLite database file if it does not exist
 if [ ! -e "$DB_PATH_TESTING" ]; then
@@ -82,10 +70,16 @@ echo -e "${YELLOW}Setting permissions for SQLite database...${NC}"
 chmod 666 "$DB_PATH_TESTING"
 
 
-# Clear database queue (since you're using database driver)
-echo -e "${YELLOW}Clearing queues...${NC}"
+# Key generate and migrate
+echo -e "${YELLOW}Generate key and run migration...${NC}"
 php artisan key:generate
-php artisan migrate:fresh --force # Ensure fresh job tables
+php artisan migrate:fresh --seed # Ensure fresh job tables
+
+Clear cache configurations
+echo -e "${YELLOW}Clearing cache configurations...${NC}"
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
 
 # Run available tests
 echo -e "${YELLOW} Run Available Test...${NC}"

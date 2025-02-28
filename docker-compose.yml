@@ -8,10 +8,12 @@ services:
         working_dir: /var/www
         volumes:
             - .:/var/www
+            - ./storage:/var/www/storage  # Persist storage directory
         networks:
             - laravel
         ports:
             - "13579:80" # Expose the app frontend only on port 13579
+            - "7373:7373"
 
 networks:
     laravel:
