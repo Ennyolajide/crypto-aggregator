@@ -13,8 +13,4 @@ window.Echo = new Echo({
 });
 
 /// Enable console logging for Pusher
-window.Pusher.logToConsole = true;
-// Handle connection events
-// window.Echo.connector.pusher.connection.bind('connected', () => {
-//     Livewire.dispatch('echo:connection-status,connected');
-// });
+window.Pusher.logToConsole = false;

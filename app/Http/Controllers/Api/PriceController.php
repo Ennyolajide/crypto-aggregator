@@ -11,34 +11,42 @@ use Illuminate\Http\JsonResponse;
 class PriceController extends Controller
 {
     /**
-     * Get latest prices for all pairs
+     * Get the latest prices for all pairs.
+     * 
+     * Caches results for 30 seconds to improve performance.
      */
-    public function latest()
+    public function latest(): JsonResponse
     {
-        $prices = CryptoPrice::query()
-            ->latestBySymbol()
-            ->get();
+        $prices = Cache::remember('latest-crypto-prices', 30, function () {
+            return CryptoPrice::query()
+                ->latestBySymbol()
+                ->get();
+        });
 
-        return CryptoPriceResource::collection($prices);
+        return response()->json([
+            'prices' => CryptoPriceResource::collection($prices),
+            'lastUpdate' => now()->toIso8601String()
+        ]);
     }
 
     /**
-     * Get historical prices for a specific pair
+     * Get historical prices for a specific pair.
+     * 
+     * @param string $pair Crypto symbol (e.g., BTC/USDT)
      */
     public function history(string $pair): JsonResponse
     {
-        // Cache the history for performance
-        $history = Cache::remember("price-history-{$pair}", 60, function () use ($pair) {
-            return CryptoPrice::where('symbol', $pair) // Ensure we're using 'symbol'
-                ->latest('created_at') // Use 'created_at' instead of 'timestamp'
+        // Cache the history for 60 seconds
+        $history = Cache::remember("price-history:{$pair}", 60, function () use ($pair) {
+            return CryptoPrice::where('symbol', strtoupper($pair)) // Ensure uppercase consistency
+                ->latest('created_at')
                 ->limit(100)
-                ->get()
-                ->map(fn($price) => [
-                    'price' => (float) $price->price,
-                    'timestamp' => $price->created_at->toIso8601String(), // Use created_at
-                ]);
+                ->get();
         });
-        return response()->json($history);
-    }
 
+        return response()->json([
+            'symbol' => strtoupper($pair),
+            'history' => CryptoPriceResource::collection($history)
+        ]);
+    }
 }

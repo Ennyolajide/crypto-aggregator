@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::get('/prices/latest', [PriceController::class, 'latest']);
+    Route::get('/prices/latest', [PriceController::class, 'latest'])->name('api.prices.latest');
     Route::get('/prices/{pair}/history', [PriceController::class, 'history']);
     // Route::get('/pairs', [PriceController::class, 'pairs']);
 });
