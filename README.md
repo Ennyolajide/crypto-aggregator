@@ -7,7 +7,8 @@ This project implements a cryptocurrency price aggregation system that fetches a
 
 ## Demo
 
-<video src="./docs/5aae6719-5d83-4709-b565-72b7bfb0f402.webm" width="600" controls></video>
+<video src="https://raw.githubusercontent.com/Ennyolajide/crypto-aggregator/main/docs/5aae6719-5d83-4709-b565-72b7bfb0f402.webm" width="600" controls></video>
+
 
 
 ### Features:
