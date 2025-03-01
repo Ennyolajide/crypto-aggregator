@@ -3,8 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\CryptoPrice;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\CryptoPriceResource;
 
 class PriceDashboard extends Component
 {
@@ -24,12 +27,27 @@ class PriceDashboard extends Component
         try {
             $response = Http::get(route('api.prices.latest')); // Fetch from your API
             $data = $response->json();
-
+        } catch (\Exception $e) {
+            $data = $this->getUpdatedPrices();
+            //Log::error("Error fetching initial prices: " . $e->getMessage());
+        } finally {
             $this->prices = collect($data['prices'])->keyBy('symbol')->toArray();
             $this->lastUpdate = now()->toTimeString();
-        } catch (\Exception $e) {
-            Log::error("Error fetching initial prices: " . $e->getMessage());
         }
+    }
+
+    public function getUpdatedPrices()
+    {
+        $prices = Cache::remember('latest-crypto-prices', 30, function () {
+            return CryptoPrice::query()
+                ->latestBySymbol()
+                ->get();
+        });
+
+        return [
+            'prices' => $prices,
+            'lastUpdate' => now()->toIso8601String()
+        ];
     }
 
     public function render()

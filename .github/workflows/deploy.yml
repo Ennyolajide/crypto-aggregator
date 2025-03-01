@@ -33,8 +33,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Run Migrations
-        run: php artisan migrate --force
+      - name: Run Tests
+        run: |
+          php artisan key:generate --env=testing
+          php artisan test --env=testing
 
       - name: Deploy Application
         uses: appleboy/ssh-action@v0.1.10
@@ -46,9 +48,25 @@ jobs:
             cd /var/www/your-app
             git pull origin main
             composer install --no-interaction --no-progress --prefer-dist
+            
+            # Rename .env.example to .env if it doesn't exist
+            [ ! -f .env ] && mv .env.example .env
+
+            chmod -R 775 storage bootstrap/cache
+
             npm install
             npm run build
-            php artisan migrate --force
+
+            php artisan cache:clear
             php artisan config:cache
+            php artisan route:cache
+
+            php artisan migrate --force
+
             php artisan queue:restart
-            sudo systemctl restart php8.3-fpm
+
+            # Restart PHP-FPM safely
+            sudo systemctl restart php8.3-fpm || sudo systemctl restart php-fpm
+
+            # Reload Nginx (if needed)
+            sudo systemctl reload nginx

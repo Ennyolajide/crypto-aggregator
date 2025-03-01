@@ -8,7 +8,6 @@ NC='\033[0m' # No Color
 
 # Database path
 DB_PATH="/var/www/database/database.sqlite"
-DB_PATH_TESTING="/var/www/database/testing.sqlite"
 
 echo -e "${GREEN}Starting Crypto Aggregator Services...${NC}\n"
 
@@ -57,23 +56,10 @@ npm install
 npm run build
 
 
-#Set Db for testing
-# Create the SQLite database file if it does not exist
-if [ ! -e "$DB_PATH_TESTING" ]; then
-    echo -e "${YELLOW}Creating SQLite database file...${NC}"
-    touch "$DB_PATH_TESTING"
-fi
-
-
-# Set permissions to ensure it's writable
-echo -e "${YELLOW}Setting permissions for SQLite database...${NC}"
-chmod 666 "$DB_PATH_TESTING"
-
-
 # Key generate and migrate
 echo -e "${YELLOW}Generate key and run migration...${NC}"
 php artisan key:generate
-php artisan migrate:fresh --seed # Ensure fresh job tables
+php artisan migrate:fresh --force # Ensure fresh job tables
 
 Clear cache configurations
 echo -e "${YELLOW}Clearing cache configurations...${NC}"
