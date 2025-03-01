@@ -5,6 +5,11 @@
 
 This project implements a cryptocurrency price aggregation system that fetches and processes real-time prices from multiple exchanges. It provides both WebSocket and REST APIs for real-time data, and utilizes Laravel LiveWire for a dynamic frontend.
 
+## Demo
+
+<video src="./docs/5aae6719-5d83-4709-b565-72b7bfb0f402.webm" width="600" controls></video>
+
+
 ### Features:
 - **Price Aggregation**: Fetches the average price of configured cryptocurrency pairs across multiple exchanges at configurable intervals.
 - **WebSocket API**: Emits real-time updates when new data is available.

@@ -3,7 +3,6 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
-        container_name: crypto_app
         restart: unless-stopped
         working_dir: /var/www
         volumes:
