@@ -83,7 +83,8 @@ php artisan route:clear
 
 # Run available tests
 echo -e "${YELLOW} Run Available Test...${NC}"
-php artisan test
+php artisan key:generate --env=testing
+php artisan test --env=testing
 
 ## Stop existing queue workers gracefully
 echo -e "${YELLOW}Stopping existing queue workers...${NC}"
