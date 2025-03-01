@@ -25,6 +25,8 @@ class PriceDashboard extends Component
     public function fetchInitialPrices()
     {
         try {
+            //TODO
+            //fix issues with api url access 
             $response = Http::get(route('api.prices.latest')); // Fetch from your API
             $data = $response->json();
         } catch (\Exception $e) {
