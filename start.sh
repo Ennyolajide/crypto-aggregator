@@ -59,7 +59,7 @@ npm run build
 # Key generate and migrate
 echo -e "${YELLOW}Generate key and run migration...${NC}"
 php artisan key:generate
-php artisan migrate:fresh --force # Ensure fresh job tables
+php artisan migrate:fresh --seed # Ensure fresh job tables
 
 Clear cache configurations
 echo -e "${YELLOW}Clearing cache configurations...${NC}"

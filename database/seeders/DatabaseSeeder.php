@@ -21,51 +21,63 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // Create some initial price data
-        foreach (['BTC', 'ETH', 'ETHBTC'] as $symbol) {
+        $initialPrices = [
+            'BTCUSDT' => [
+                'price' => 85665.423333333,
+                'previous_price' => 85656.023333333,
+                'last_btc' => 0,
+                'lowest' => 85311.51,
+                'highest' => 107186.38,
+                'daily_change_percentage' => -0.41096332015426,
+                'exchanges' => ['binance', 'mexc', 'huobi'],
+                'trend' => 'up'
+            ],
+            'ETHUSDT' => [
+                'price' => 2214.36,
+                'previous_price' => 2213.9566666667,
+                'last_btc' => 0,
+                'lowest' => 2194.47,
+                'highest' => 2256.58,
+                'daily_change_percentage' => -0.073106524346708,
+                'exchanges' => ['binance', 'huobi'],
+                'trend' => 'up'
+            ],
+            'BNBUSDT' => [
+                'price' => 606.38333333333,
+                'previous_price' => 606.56,
+                'last_btc' => 0,
+                'lowest' => 604.24,
+                'highest' => 611.44,
+                'daily_change_percentage' => -0.19586137086751,
+                'exchanges' => ['binance', 'mexc', 'huobi'],
+                'trend' => 'down'
+            ],
+            'ETHBTC' => [
+                'price' => 0.0258385,
+                'previous_price' => 0.025853,
+                'last_btc' => 0,
+                'lowest' => 0.025572,
+                'highest' => 0.02626,
+                'daily_change_percentage' => 0.30671307852025,
+                'exchanges' => ['binance', 'huobi'],
+                'trend' => 'down'
+            ]
+        ];
+
+        foreach ($initialPrices as $symbol => $data) {
             CryptoPrice::create([
                 'symbol' => $symbol,
-                'price' => match($symbol) {
-                    'BTC' => 50000.00,
-                    'ETH' => 3000.00,
-                    'ETHBTC' => 0.06
-                },
-                'previous_price' => match($symbol) {
-                    'BTC' => 49000.00,
-                    'ETH' => 2900.00,
-                    'ETHBTC' => 0.059
-                },
-                'last_btc' => match($symbol) {
-                    'BTC' => 1.0,
-                    'ETH' => 0.06,
-                    'ETHBTC' => 0.06
-                },
-                'lowest' => match($symbol) {
-                    'BTC' => 48000.00,
-                    'ETH' => 2800.00,
-                    'ETHBTC' => 0.058
-                },
-                'highest' => match($symbol) {
-                    'BTC' => 51000.00,
-                    'ETH' => 3100.00,
-                    'ETHBTC' => 0.061
-                },
-                'daily_change_percentage' => 2.0,
-                'exchanges' => ['binance', 'mexc', 'huobi'],
-                'created_at' => now()
+                'price' => $data['price'],
+                'previous_price' => $data['previous_price'],
+                'last_btc' => $data['last_btc'],
+                'lowest' => $data['lowest'],
+                'highest' => $data['highest'],
+                'daily_change_percentage' => $data['daily_change_percentage'],
+                'exchanges' => $data['exchanges'],
+                'trend' => $data['trend']
             ]);
         }
 
-        // Create some random historical data
-        if (app()->environment('local', 'development')) {
-            CryptoPrice::factory()
-                ->count(50)
-                ->sequence(
-                    ['symbol' => 'BTC'],
-                    ['symbol' => 'ETH'],
-                    ['symbol' => 'ETHBTC']
-                )
-                ->create();
-        }
+       
     }
 }
