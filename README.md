@@ -6,8 +6,9 @@
 This project implements a cryptocurrency price aggregation system that fetches and processes real-time prices from multiple exchanges. It provides both WebSocket and REST APIs for real-time data, and utilizes Laravel LiveWire for a dynamic frontend.
 
 ## Demo
+[Click here to watch the demo ](https://www.youtube.com/watch?v=g8IuG0Pvbyw)
 
-<video src="https://raw.githubusercontent.com/Ennyolajide/crypto-aggregator/main/docs/5aae6719-5d83-4709-b565-72b7bfb0f402.webm" width="600" controls></video>
+[![Video](./docs/thumbnail.jpg)](https://www.youtube.com/watch?v=g8IuG0Pvbyw)
 
 
 
