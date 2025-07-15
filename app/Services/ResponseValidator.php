@@ -5,6 +5,11 @@ namespace App\Services;
 use App\Exceptions\FreeCryptoApiClient\FreeCryptoApiRateLimitException;
 use App\Exceptions\FreeCryptoApiClient\FreeCryptoApiInvalidResponseException;
 
+/**
+ * - SOLID (Single Responsibility): This class only validates API responses and throws exceptions (validateResponse()). This keeps validation logic focused and testable.
+ * - DRY: The validateResponse() method is reused for all API requests, centralizing validation logic.
+ * - YAGNI: Only validates what is needed for the current API contract; no extra validation rules or error types.
+ */
 class ResponseValidator
 {
     /**

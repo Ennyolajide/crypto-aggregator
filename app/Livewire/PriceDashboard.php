@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\CryptoPriceResource;
 
+/**
+ * - SOLID (Single Responsibility): This component only displays and updates price data in the UI (fetchInitialPrices(), getUpdatedPrices()). This makes the component easy to reason about and maintain.
+ * - DRY: Data fetching and caching logic are encapsulated and reused for both initial and updated prices.
+ * - YAGNI: Only implements UI and data logic required for the dashboard; no extra features or abstractions.
+ */
 class PriceDashboard extends Component
 {
     public $prices = [];

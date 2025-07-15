@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\FreeCryptoApiClient;
-
+use App\Contracts\FreeCryptoApiClientInterface;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -12,9 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(FreeCryptoApiClient::class, function ($app) {
-            return new FreeCryptoApiClient();
-        });
+        $this->app->bind(FreeCryptoApiClientInterface::class, FreeCryptoApiClient::class);
     }
 
     /**

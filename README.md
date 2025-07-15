@@ -202,6 +202,39 @@ Unit tests are implemented for core functionality. To run the tests:
 
 ---
 
+## Additional Important Tests
+
+- **WebSocket & Event Broadcasting:**
+  - `tests/WebSocket/PriceUpdateTest.php` ensures that price updates are broadcasted in real time with the correct structure and channel, validating the robustness of the event system.
+- **StorePriceUpdate Job:**
+  - Feature tests verify both new and duplicate price updates are handled and broadcasted as expected.
+- **Test Utilities:**
+  - `tests/TestHelper.php` provides reusable helpers for generating mock data and accessing private/protected members, supporting DRY principles in tests.
+
+---
+
+## Suggestions for Further Improvement
+
+- **Expand Test Coverage:**
+  - Add tests for API failure scenarios (rate limits, invalid responses), database transaction rollbacks, and input validation for all endpoints and jobs.
+  - Add tests for permission/authentication checks if user features are added.
+- **Remove or Replace ExampleTest:**
+  - Replace `tests/Unit/ExampleTest.php` with a meaningful unit test or remove it to keep the test suite clean.
+- **Add Integration Tests:**
+  - Simulate the full flow: API request → job dispatch → event broadcast → frontend update.
+- **Test Coverage for Console Commands:**
+  - Add or expand tests for custom Artisan commands, especially for error handling and edge cases.
+- **Test for Resource Transformation:**
+  - Ensure API resources (e.g., `CryptoPriceResource`) always return the expected structure, especially as the API evolves.
+- **Continuous Code Quality:**
+  - Integrate static analysis tools (e.g., PHPStan, Psalm) and code style checkers (e.g., PHP CS Fixer, Pint) into CI/CD for ongoing code quality.
+- **Documentation for Test Utilities:**
+  - Add documentation/comments to `TestHelper.php` to clarify its usage for future contributors.
+- **Consider User/Auth Tests:**
+  - If user authentication is or will be part of the system, add tests for registration, login, and permission checks.
+
+---
+
 ## CI/CD Implementation
 
 The project is integrated with **GitHub Actions** for continuous integration and deployment. It includes:
@@ -224,6 +257,45 @@ The application uses Docker for an isolated environment. To run everything in Do
 ```bash
 ./start.sh
 ```
+
+---
+
+## Engineering Principles in Practice
+
+This codebase was designed and implemented with industry-standard engineering principles to ensure maintainability, reliability, and clarity. Below are concrete justifications and examples for each principle:
+
+### ✅ Test-Driven Development (TDD)
+- **Approach:** Tests were written before implementing core features, ensuring that requirements are met and regressions are caught early.
+- **Examples:**
+  - `StorePriceUpdate` job: Feature and unit tests (see `tests/Feature/StorePriceUpdateFeatureTest.php`, `tests/Unit/Jobs/StorePriceUpdateUnitTest.php`) were written to verify that price updates are stored and broadcasted correctly.
+  - `PriceFetcherJob`: Feature and unit tests (see `tests/Feature/Jobs/PriceFetcherJobFeatureTest.php`, `tests/Unit/Jobs/PriceFetcherJobUnitTest.php`) ensure jobs are dispatched and retried on failure.
+  - API endpoints: Feature tests (see `tests/Feature/Api/PriceControllerTest.php`) validate that the REST API returns correct data for latest and historical prices.
+
+### ✅ SOLID Principles
+- **Single Responsibility Principle (SRP):**
+  - Each class has one responsibility. For example, `StorePriceUpdate` only handles storing and broadcasting price updates, while `ResultAggregator` only aggregates and formats API results. This makes classes easier to maintain and test.
+- **Open/Closed Principle (OCP):**
+  - The price fetching logic is open for extension but closed for modification. By introducing the `FreeCryptoApiClientInterface`, you can add new price fetcher implementations (e.g., for different APIs or mocks for testing) without changing existing code. The system can be extended by simply creating a new class that implements this interface.
+- **Liskov Substitution Principle (LSP):**
+  - Any implementation of `FreeCryptoApiClientInterface` can be substituted for another without breaking the system, as long as it adheres to the contract. This ensures flexibility and reliability when swapping implementations.
+- **Interface Segregation Principle (ISP):**
+  - `FreeCryptoApiClientInterface` provides a focused contract for price fetching, so classes only implement what they need. This avoids forcing classes to depend on methods they do not use.
+- **Dependency Inversion Principle (DIP):**
+  - High-level modules (like jobs) depend on abstractions, not concrete implementations. For example, `PriceFetcherJob` now depends on `FreeCryptoApiClientInterface` instead of a concrete class. The binding in `AppServiceProvider` ensures the correct implementation is injected, making the codebase more flexible, decoupled, and testable.
+
+### ✅ DRY (Don’t Repeat Yourself)
+- **Approach:** Common logic is encapsulated in reusable methods and services.
+- **Examples:**
+  - The `calculateTrend()` method in `StorePriceUpdate` is reused for all price updates, avoiding code repetition.
+  - The `fetchPriceWithRetry()` method in `FreeCryptoApiClient` centralizes retry logic for all API requests.
+  - Caching and resource transformation logic are reused in multiple API endpoints and Livewire components.
+
+### ✅ YAGNI (You Aren’t Gonna Need It)
+- **Approach:** Only features and abstractions required for the current requirements are implemented, avoiding overengineering.
+- **Examples:**
+  - No extra abstraction for price history or analytics; only the required fields and logic for current requirements are implemented in jobs and services.
+  - No advanced job chaining or scheduling logic; only the necessary scheduling for periodic price fetching is present.
+  - UI components only implement the data and interactivity needed for the dashboard, with no speculative features.
 
 ---
 
