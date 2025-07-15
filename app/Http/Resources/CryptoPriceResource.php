@@ -5,6 +5,11 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * - SOLID (Single Responsibility): This resource only transforms CryptoPrice data for API responses (toArray()). This keeps transformation logic isolated and easy to update.
+ * - DRY: All transformation logic is centralized in toArray(), avoiding repetition across controllers or jobs.
+ * - YAGNI: Only the required fields for the frontend/API are included; no extra formatting or data is added.
+ */
 class CryptoPriceResource extends JsonResource
 {
     public function toArray(Request $request): array

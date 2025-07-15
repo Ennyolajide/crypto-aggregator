@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+/**
+ * - SOLID (Single Responsibility): This job only stores and broadcasts price updates (handle()), with trend calculation delegated to calculateTrend(). This separation makes the code easier to maintain and test.
+ * - DRY: The calculateTrend() method is reused for all price updates, avoiding code repetition in trend logic.
+ * - YAGNI: No extra abstraction for price history or analytics; only the required fields and logic for current requirements are implemented.
+ */
 class StorePriceUpdate implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;

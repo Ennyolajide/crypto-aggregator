@@ -7,6 +7,13 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Principles applied:
+ * - SOLID: Command is responsible only for starting the price fetcher process and validating configuration.
+ * - DRY: Configuration validation and logging are reused for all command invocations.
+ * - YAGNI: Only implements options and logic needed for current requirements; no extra command features.
+ * - TDD: Covered by feature tests for command execution and error handling (see tests/Feature/Console/StartPriceFetcherTest.php).
+ */
 class StartPriceFetcher extends Command
 {
     protected $signature = 'crypto:fetch-prices 

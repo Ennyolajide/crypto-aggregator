@@ -2,14 +2,21 @@
 
 namespace App\Jobs;
 
-use App\Services\FreeCryptoApiClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use App\Contracts\FreeCryptoApiClientInterface;
 
+/**
+ * - SOLID (Single Responsibility): This job only fetches prices and dispatches StorePriceUpdate jobs (handle()), with scheduling in scheduleNextRun(). This makes the job focused, maintainable, and easy to test.
+ * - SOLID (Open/Closed): The job depends on FreeCryptoApiClientInterface, so new price fetcher implementations can be injected without modifying this class.
+ * - SOLID (Dependency Inversion): The job depends on an abstraction (FreeCryptoApiClientInterface), not a concrete class, making it flexible and decoupled from specific implementations.
+ * - DRY: The scheduling and retry logic is encapsulated in scheduleNextRun() and the backoff array, avoiding repetition.
+ * - YAGNI: No extra abstraction for job chaining or advanced scheduling; only the required logic for periodic price fetching is implemented.
+ */
 class PriceFetcherJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -27,7 +34,7 @@ class PriceFetcherJob implements ShouldQueue
         }
     }
 
-    public function handle(FreeCryptoApiClient $client): void
+    public function handle(FreeCryptoApiClientInterface $client): void
     {
         try {
             

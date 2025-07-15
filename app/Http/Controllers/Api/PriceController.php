@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\CryptoPriceResource;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * - SOLID (Single Responsibility): This controller only handles API requests for prices (latest(), history()), delegating business logic to models/resources. This keeps the controller simple and focused.
+ * - DRY: Caching and resource transformation are reused for both endpoints, avoiding code repetition.
+ * - YAGNI: Only exposes endpoints and fields required by the frontend; no extra filtering or analytics.
+ */
 class PriceController extends Controller
 {
     /**

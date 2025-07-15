@@ -4,6 +4,11 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
 
+/**
+ * - SOLID (Single Responsibility): This service only aggregates and formats API results (processResponses(), formatResults()). This keeps aggregation logic isolated and maintainable.
+ * - DRY: The formatResults() method is reused for all symbol data, avoiding code repetition in result formatting.
+ * - YAGNI: Only aggregates fields required by the application; no extra statistics or analytics are calculated.
+ */
 class ResultAggregator
 {
     /**

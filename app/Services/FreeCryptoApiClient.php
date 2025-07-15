@@ -2,15 +2,24 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Promise\Utils;
-use GuzzleHttp\Promise\PromiseInterface;
-use App\Exceptions\FreeCryptoApiClient\FreeCryptoApiException;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Services\ResultAggregator;
-use App\Services\ResponseValidator; // Import the new class
+use App\Services\ResponseValidator;
+use GuzzleHttp\Promise\PromiseInterface;
+use App\Contracts\FreeCryptoApiClientInterface;
+use App\Exceptions\FreeCryptoApiClient\FreeCryptoApiException;
 
-class FreeCryptoApiClient
+
+/**
+ * - SOLID (Single Responsibility): This service only handles API communication and response validation (getPrices(), fetchPriceWithRetry()).
+ * - SOLID (Open/Closed): Implements PriceFetcherInterface, allowing new price fetchers to be added without modifying this class.
+ * - SOLID (Dependency Inversion): High-level modules depend on the PriceFetcherInterface abstraction, not this concrete class.
+ * - DRY: The fetchPriceWithRetry() method encapsulates retry logic, and buildRequests() is reused for all symbols.
+ * - YAGNI: Only the required API endpoints and retry logic are implemented; no extra abstraction for unused endpoints or advanced error handling.
+ */
+class FreeCryptoApiClient implements FreeCryptoApiClientInterface
 {
     private string $baseUrl;
     private string $apiKey;
